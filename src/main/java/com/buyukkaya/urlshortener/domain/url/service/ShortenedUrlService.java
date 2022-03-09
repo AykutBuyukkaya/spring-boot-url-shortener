@@ -13,4 +13,6 @@ public interface ShortenedUrlService {
 
     ResponseEntity<ApiResponse> deleteShortenedUrl(String deletionKey);
 
+    Integer deleteEntitiesPastValidationDate();
+
 }

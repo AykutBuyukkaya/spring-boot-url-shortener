@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -19,5 +20,7 @@ public interface ShortenedUrlRepository extends JpaRepository<ShortenedUrl, Long
     void deleteByDeletionKey(@Param("deletion_key") String deletionKey);
 
     boolean existsByDeletionKey(String deletionKey);
+
+    Integer deleteByValidUntilLessThanEqual(LocalDateTime dateTime);
 
 }

@@ -45,5 +45,11 @@ springdoc:
 
 urlShortener:
   baseUrl: "http://localhost:8080/api/v1/url-shortener/"
+  scheduledJobDelay: "PT5M"
+  schedulerJobInitialDelay : "PT5M"
+
+  mail:
+    fromAddress: "urlshortener@buyukkaya.com"
+    templatePath: "/templates/email/CompletionMailTemplate.html"
 
 

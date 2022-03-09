@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -22,9 +22,7 @@ public class ShortenedUrl {
     private Long id;
 
     @Getter
-    @URL(message = "Only an URL can be shortened!")
     @Column(name = "actual_link", nullable = false)
-    @Size(max = 64, message = "Maximum size of the link cannot be greater than 64!")
     private String realLink;
 
     @Column(name = "access_key", unique = true, nullable = false, updatable = false)
@@ -34,6 +32,7 @@ public class ShortenedUrl {
     @Column(name = "deletion_key", unique = true, nullable = false, updatable = false)
     private String deletionKey;
 
+    @DateTimeFormat(pattern = "dd/MM/yyyy kk.mm")
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

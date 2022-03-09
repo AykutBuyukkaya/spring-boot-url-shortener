@@ -2,7 +2,6 @@ package com.buyukkaya.urlshortener.domain.notification.service.imp;
 
 import com.buyukkaya.urlshortener.domain.notification.model.request.MailSenderRequest;
 import com.buyukkaya.urlshortener.domain.notification.service.MailSenderService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -16,22 +15,31 @@ import org.thymeleaf.context.Context;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
-//TODO: FIX IF VALID UNTIL IS NULL ON HTML PAGE.
+
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MailSenderServiceImp implements MailSenderService {
 
     private final JavaMailSender javaMailSender;
+    private final TemplateEngine templateEngine;
+
+    @Value("${urlShortener.mail.fromAddress}")
+    private String fromAddress;
 
     @Value("${urlShortener.baseUrl}")
     private String baseUrl;
 
-    private final TemplateEngine templateEngine = new TemplateEngine();
+    @Value("${urlShortener.mail.templatePath}")
+    private String mailTemplatePath;
+
+
+    public MailSenderServiceImp(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+        this.templateEngine = new TemplateEngine();
+    }
 
     @Override
     public void sendCompletionMail(MailSenderRequest request) {
@@ -41,8 +49,9 @@ public class MailSenderServiceImp implements MailSenderService {
 
             messageHelper.setText(templateEngine.process(readTemplate(), setMailContexts(request)), true);
             messageHelper.setSubject("URL Shortening complete!");
-            messageHelper.setFrom("urlshortener@buyukkaya.com");
+            messageHelper.setFrom(fromAddress);
             messageHelper.setTo(request.getMailAddress());
+
 
             javaMailSender.send(message);
 
@@ -69,7 +78,7 @@ public class MailSenderServiceImp implements MailSenderService {
 
     private String readTemplate() throws IOException {
 
-        return Files.readString(new ClassPathResource("/templates/email/CompletionMailTemplate.html").getFile().toPath());
+        return Files.readString(new ClassPathResource(mailTemplatePath).getFile().toPath());
 
 
     }

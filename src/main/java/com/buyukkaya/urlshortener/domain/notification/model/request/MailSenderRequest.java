@@ -22,7 +22,6 @@ public class MailSenderRequest {
     @NonNull
     private String deletionKey;
 
-
     private LocalDateTime validUntil;
 
 }

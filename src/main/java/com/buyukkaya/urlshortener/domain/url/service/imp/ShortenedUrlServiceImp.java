@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Random;
 
 @Slf4j
@@ -29,15 +30,17 @@ public class ShortenedUrlServiceImp implements ShortenedUrlService {
     private final ShortenedUrlRepository shortenedUrlRepository;
     private final MailSenderService mailSenderService;
 
+    //TODO: WRITE EXCEPTION HANDLER.
+    //TODO VALIDATE URL
+    //TODO ENCODE REAL URLS!
     @Override
     public ResponseEntity<ApiResponse> createUrlEntity(UrlCreationRequest request) {
 
         try {
 
-
             String accessKey = (request.getAccessKey() == null)
                     ?
-                    RandomStringUtils.randomAlphanumeric(new Random().nextInt(3) + 5)
+                    RandomStringUtils.randomAlphanumeric(new Random().nextInt(5) + 2)
                     :
                     request.getAccessKey();
 
@@ -46,12 +49,12 @@ public class ShortenedUrlServiceImp implements ShortenedUrlService {
             }
 
 
-            String deletionKey = RandomStringUtils.randomAlphanumeric(new Random().nextInt(3) + 5);
+            String deletionKey = RandomStringUtils.randomAlphanumeric(new Random().nextInt(5) + 2);
 
             ShortenedUrl shortenedUrl = ShortenedUrl.builder()
                     .accessKey((request.getAccessKey() == null) ? accessKey : request.getAccessKey())
                     .deletionKey(deletionKey)
-                    .realLink(request.getRealUrl())
+                    .realLink(Base64.getEncoder().encodeToString(request.getRealUrl().getBytes()))
                     .createdAt(LocalDateTime.now())
                     .validUntil(request.getValidUntil())
                     .build();
@@ -73,7 +76,7 @@ public class ShortenedUrlServiceImp implements ShortenedUrlService {
 
         } catch (Exception e) {
 
-            log.error(e.getMessage());
+            log.error("Error while creating shortened url: {}", e);
 
             return new ResponseEntity<>(ApiResponse.builder()
                     .message(e.getMessage())
@@ -86,7 +89,7 @@ public class ShortenedUrlServiceImp implements ShortenedUrlService {
     @Override
     public RedirectView forwardToActualUrl(String accessKey) {
 
-        return new RedirectView(shortenedUrlRepository.findByAccessKey(accessKey)
+        return new RedirectView(shortenedUrlRepository.findByAccessKey(Base64.getEncoder().encodeToString(accessKey.getBytes()))
                 .orElseThrow(
                         () -> new ShortenedUrlNotFoundException("We couldn't find a data according to given access key.")
                 ).getRealLink());
@@ -99,7 +102,7 @@ public class ShortenedUrlServiceImp implements ShortenedUrlService {
 
         try {
 
-            if(shortenedUrlRepository.existsByDeletionKey(deletionKey)){
+            if (shortenedUrlRepository.existsByDeletionKey(deletionKey)) {
                 throw new AccessKeyExistException("Given access key already exist!");
             }
 
@@ -121,6 +124,14 @@ public class ShortenedUrlServiceImp implements ShortenedUrlService {
 
         }
 
+
+    }
+
+    @Transactional
+    @Override
+    public Integer deleteEntitiesPastValidationDate() {
+
+        return shortenedUrlRepository.deleteByValidUntilLessThanEqual(LocalDateTime.now());
 
     }
 }

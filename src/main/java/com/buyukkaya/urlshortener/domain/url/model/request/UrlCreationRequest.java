@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UrlCreationRequest {
 
-    @URL(message = "Url is not valid!")
+    @Size(max = 32, message = "Size of the actual URL cannot be greater than {max} characters")
+    @URL(regexp = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]", message = "Invalid URL!")
     private String realUrl;
 
     @Size(min = 5, max = 16, message = "Url key has to be between {min} and {max} characters!")
