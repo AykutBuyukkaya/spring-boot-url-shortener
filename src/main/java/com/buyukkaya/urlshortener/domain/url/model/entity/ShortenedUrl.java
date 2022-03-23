@@ -36,6 +36,7 @@ public class ShortenedUrl {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @DateTimeFormat(pattern = "dd/MM/yyyy kk.mm")
     @Column(nullable = true)
     private LocalDateTime validUntil;
 

@@ -15,6 +15,8 @@ public interface ShortenedUrlRepository extends JpaRepository<ShortenedUrl, Long
 
     Optional<ShortenedUrl> findByAccessKey(String accessKey);
 
+    Optional<ShortenedUrl> findById(Long id);
+
     @Modifying
     @Query(value = "DELETE FROM ShortenedUrl url WHERE url.deletionKey = :deletion_key")
     void deleteByDeletionKey(@Param("deletion_key") String deletionKey);
@@ -22,5 +24,7 @@ public interface ShortenedUrlRepository extends JpaRepository<ShortenedUrl, Long
     boolean existsByDeletionKey(String deletionKey);
 
     Integer deleteByValidUntilLessThanEqual(LocalDateTime dateTime);
+
+
 
 }

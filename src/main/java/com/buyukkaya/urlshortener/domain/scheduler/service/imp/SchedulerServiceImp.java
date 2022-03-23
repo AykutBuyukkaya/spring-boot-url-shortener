@@ -1,8 +1,7 @@
 package com.buyukkaya.urlshortener.domain.scheduler.service.imp;
 
 import com.buyukkaya.urlshortener.domain.scheduler.service.SchedulerService;
-import com.buyukkaya.urlshortener.domain.url.service.ShortenedUrlService;
-import lombok.RequiredArgsConstructor;
+import com.buyukkaya.urlshortener.domain.url.service.UrlShortenerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,12 +10,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @EnableScheduling
-@RequiredArgsConstructor
 public class SchedulerServiceImp implements SchedulerService {
 
-    private final ShortenedUrlService shortenedUrlService;
+    private final UrlShortenerService shortenedUrlService;
 
-    @Scheduled(initialDelayString = "${urlShortener.schedulerJobInitialDelay}",fixedDelayString = "${urlShortener.scheduledJobDelay}")
+    public SchedulerServiceImp(UrlShortenerService shortenedUrlService) {
+        this.shortenedUrlService = shortenedUrlService;
+    }
+
+    @Scheduled(initialDelayString = "${urlShortener.schedulerJobInitialDelay}",fixedDelayString = "PT5M")
     @Override
     public void deletePastDateEntities() {
 
