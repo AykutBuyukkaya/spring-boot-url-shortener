@@ -33,7 +33,7 @@ These are APIs that we need to provide:
 |----------|------------------------------------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
 | `POST`   | {{baseUrl}}/url-shortener                | Body           | {"realUrl": "string","accessKey": "string","validUntil": "2022-04-21T20:23:15.443Z","mail": "string"}                                    | Creating Shortened Url               |
 | `GET`    | {{baseUrl}}/url-shortener/{accessKey}    | PathVariable   | accessKey                                                                                                                                | Forwards To The Actual URL           |
-| `GET`    | {{baseUrl}}/url-shortener/get-by-id/{id} | PathVariable   | id                                                                                                                                       | Get Shortened URL ENTITY DTO         |
+| `GET`    | {{baseUrl}}/url-shortener/get-by-id/{id} | PathVariable   | id                                                                                                                                       | Get Shortened URL Entity DTO         |
 | `DELETE` | {{baseUrl}}/url-shortener/{deletionKey}  | deletionKey    | deletionKey                                                                                                                              | Delete Shortened URL By Deletion Key |
 ___
 
