@@ -1,5 +1,6 @@
 package com.buyukkaya.urlshortener.domain.url.service.imp;
 
+import com.buyukkaya.urlshortener.domain.common.model.mapper.ShortenedUrlMapper;
 import com.buyukkaya.urlshortener.domain.common.model.response.ApiResponse;
 import com.buyukkaya.urlshortener.domain.notification.model.request.MailSenderRequest;
 import com.buyukkaya.urlshortener.domain.notification.service.MailSenderService;
@@ -29,6 +30,7 @@ public class UrlShortenerServiceImp implements UrlShortenerService {
 
     private final ShortenedUrlRepository shortenedUrlRepository;
     private final MailSenderService mailSenderService;
+
 
     //TODO: WRITE EXCEPTION HANDLER.
 
@@ -137,8 +139,8 @@ public class UrlShortenerServiceImp implements UrlShortenerService {
     @Override
     public ResponseEntity<ApiResponse> getShortenerUrlById(Long id) {
         return new ResponseEntity<>(ApiResponse.builder()
-                .data(shortenedUrlRepository.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("ShortenedUrl with id")))
+                .data(ShortenedUrlMapper.MAPPER.toShortenedUrlDto(shortenedUrlRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("ShortenedUrl with id"))))
                 .message("Shortened url entity with given id is found")
                 .build(),
                 HttpStatus.OK);
